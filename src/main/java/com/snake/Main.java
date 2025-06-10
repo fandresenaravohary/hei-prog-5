@@ -1,17 +1,34 @@
 package com.snake;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+import com.snake.engine.Game;
+import com.snake.models.Direction;
+
+import java.util.Scanner;
+
 public class Main {
     public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+        Game game = new Game();
+        Scanner scanner = new Scanner(System.in);
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
+        while (true) {
+            System.out.println("Direction (WASD): ");
+            String input = scanner.nextLine().toUpperCase();
+
+            switch (input) {
+                case "W" -> game.getSnake().setDirection(Direction.UP);
+                case "S" -> game.getSnake().setDirection(Direction.DOWN);
+                case "A" -> game.getSnake().setDirection(Direction.LEFT);
+                case "D" -> game.getSnake().setDirection(Direction.RIGHT);
+                default -> System.out.println("Invalid input.");
+            }
+
+            game.update();
+
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
         }
     }
 }
