@@ -1,6 +1,8 @@
 # 🐍 HEI Snake Game  
 *(Calculatrice et cahier de leçon autorisés)*  
 
+# Binome: STD22029
+
 ## 🎯 Objectifs
 
 Développer un mini-moteur du **Snake Game** en console, en appliquant les principes de **Clean Code** :
