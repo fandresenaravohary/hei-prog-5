@@ -1,52 +1,59 @@
 package com.snake.engine;
 
-import com.snake.models.Direction;
+import com.snake.models.FoodFactory;
 import com.snake.models.Point;
 import com.snake.models.Snake;
+import com.snake.models.SnakeBuilder;
+import com.snake.states.GameState;
+import com.snake.strategies.MoveStrategy;
+import com.snake.strategies.UserMoveStrategy;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.util.Scanner;
+
+@Getter
+@Setter
 public class Game {
-    private static final int SIZE = 10;
-    private final Snake snake;
+    private static final int GRID_SIZE = 10;
+
+    private Snake snake;
+    private Point food;
+    private final FoodFactory foodFactory;
+    private GameState state;
+    private final MoveStrategy moveStrategy;
+    private boolean gameOver;
 
     public Game() {
-        this.snake = new Snake(new Point(SIZE / 2, SIZE / 2), Direction.RIGHT);
+        foodFactory = new FoodFactory(GRID_SIZE);
+        snake = new SnakeBuilder()
+                .setStart(new Point(GRID_SIZE / 2, GRID_SIZE / 2))
+                .setDirection(com.snake.models.Direction.RIGHT)
+                .setInitialLength(3)
+                .build();
+        moveStrategy = new UserMoveStrategy(new Scanner(System.in));
+        generateFood();
+        gameOver = false;
+    }
+
+    public int getGridSize() {
+        return GRID_SIZE;
+    }
+
+    public void generateFood() {
+        food = foodFactory.generateFood(snake.getBody());
     }
 
     public void update() {
-        snake.move();
-        render();
-    }
+        if (state == null) return;
 
-    private void render() {
-        char[][] grid = new char[SIZE][SIZE];
+        state.handleInput();
+        state.update();
+        state.render();
 
-        for (int y = 0; y < SIZE; y++) {
-            for (int x = 0; x < SIZE; x++) {
-                grid[y][x] = '.';
-            }
+        if (state instanceof com.snake.states.GameOverState) {
+            gameOver = true;
         }
-
-        for (Point p : snake.getBody()) {
-            if (isInside(p)) {
-                grid[p.y()][p.x()] = '*';
-            }
-        }
-
-        for (char[] row : grid) {
-            for (char c : row) {
-                System.out.print(c + " ");
-            }
-            System.out.println();
-        }
-
-        System.out.println("-----");
     }
 
-    private boolean isInside(Point p) {
-        return p.x() >= 0 && p.x() < SIZE && p.y() >= 0 && p.y() < SIZE;
-    }
-
-    public Snake getSnake() {
-        return snake;
-    }
 }
