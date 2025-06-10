@@ -19,15 +19,40 @@ public class Snake {
         body.removeLast();
     }
 
+    public void grow() {
+        Point tail = body.getLast();
+        body.addLast(tail);
+    }
+
+    public boolean collidesWithSelf() {
+        Point head = body.getFirst();
+        return body.stream().skip(1).anyMatch(segment -> segment.equals(head));
+    }
+
     public List<Point> getBody() {
         return List.copyOf(body);
     }
 
-    public void setDirection(Direction newDirection) {
-        this.direction = newDirection;
-    }
-
     public Point getHead() {
         return body.getFirst();
+    }
+
+    public void setDirection(Direction newDirection) {
+        if (!isOppositeDirection(newDirection)) {
+            this.direction = newDirection;
+        }
+    }
+
+    private boolean isOppositeDirection(Direction newDirection) {
+        return switch (direction) {
+            case UP -> newDirection == Direction.DOWN;
+            case DOWN -> newDirection == Direction.UP;
+            case LEFT -> newDirection == Direction.RIGHT;
+            case RIGHT -> newDirection == Direction.LEFT;
+        };
+    }
+
+    public Direction getDirection() {
+        return direction;
     }
 }
